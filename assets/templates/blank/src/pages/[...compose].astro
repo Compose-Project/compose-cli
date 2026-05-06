@@ -1,0 +1,29 @@
+---
+export const prerender = false;
+
+const slug = Astro.params.compose || "home";
+if (slug.startsWith("_emdash") || slug.startsWith("api/")) {
+	return new Response(null, { status: 404 });
+}
+
+let pageHtml = "";
+Astro.response.status = 500;
+
+try {
+	const res = await fetch(new URL("/_emdash/api/plugins/compose/get_page", Astro.url), {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ slug }),
+	});
+
+	if (res.ok) {
+		const { data } = await res.json();
+		Astro.response.status = data?.statusCode || 200;
+		pageHtml = data?.html || "";
+	}
+} catch (e) {
+	console.error("[Compose] SSR Error:", e);
+}
+---
+
+<Fragment set:html={pageHtml} />
