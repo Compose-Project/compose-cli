@@ -4,7 +4,7 @@ import ora from 'ora';
 
 let procIds = 0;
 
-export function execCmd(cmd: string, cwd?: string, pipe: boolean = true) {
+export function execCmd(cmd: string, cwd?: string, pipe: boolean = true, spinnerMsg?: string) {
     return new Promise((resolve, reject) => {
         const proc = exec(cmd, { cwd });
 
@@ -17,7 +17,8 @@ export function execCmd(cmd: string, cwd?: string, pipe: boolean = true) {
                 else reject(new Error(`Command "${cmd}" exited with code ${code}`));
             });
         } else {
-            const spinner = ora(`Running ${procIds++}`).start();
+            const msg = spinnerMsg || `Running proc: ${procIds++}`;
+            const spinner = ora(msg).start();
 
             proc.on('close', code => {
                 spinner.stop();

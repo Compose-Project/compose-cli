@@ -17,7 +17,7 @@ const cmd = new Command()
     .action(async () => {
         console.log('Initializing a new Compose project...'.cyan);
 
-        // Step 1/3 : Get the project details
+        // Step 1/4 : Get the project details
         let { name } = cmd.opts();
         if (!name) {
             // Ask the user for the project name if not provided
@@ -43,7 +43,7 @@ const cmd = new Command()
             process.exit(1);
         }
 
-        // Step 2/3 : Create the project directory
+        // Step 2/4 : Create the project directory
         try {
             await mkdir(projectDir);
 
@@ -83,9 +83,16 @@ const cmd = new Command()
             process.exit(1);
         }
 
-        // Step 3/3 : run install and bootstrap command
+        // Step 3/4 : run install and bootstrap command
         await execCmd('pnpm install', projectDir, false);
         await execCmd('pnpm bootstrap', projectDir);
+
+        // Step 4/4 : if Git is available, initialize a new Git repository
+        try {
+            await execCmd('git init', projectDir);
+            await execCmd('git add .', projectDir);
+            await execCmd('git commit -m "core(init): Initial commit"', projectDir);
+        } catch {}
 
         // Final message
         console.clear();
