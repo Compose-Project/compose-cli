@@ -89,8 +89,7 @@ const cmd = new Command()
 
         // Step 4/4 : if Git is available, initialize a new Git repository
         try {
-            await execCmd('git init', projectDir);
-            await execCmd('git add .', projectDir);
+            await execCmd('git init && git add .', projectDir);
             await execCmd('git commit -m "core(init): Initial commit"', projectDir);
         } catch {}
 
