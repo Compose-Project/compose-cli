@@ -1,6 +1,6 @@
 {
   "name": "@emdash-compose/compose-cli",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "EmDash clean installation with compose installer.",
   "keywords": [],
   "homepage": "https://github.com/Compose-Project/compose-cli#readme",

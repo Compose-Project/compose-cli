@@ -1,9 +1,9 @@
 import node from "@astrojs/node";
 import react from "@astrojs/react";
+import { composePlugin } from "@emdash-compose/compose";
 import { defineConfig } from "astro/config";
 import emdash, { local } from "emdash/astro";
 import { sqlite } from "emdash/db";
-import { composePlugin } from "emdash-compose";
 
 export default defineConfig({
 	output: "server",
