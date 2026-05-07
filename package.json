@@ -1,6 +1,6 @@
 {
   "name": "@emdash-compose/compose-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "EmDash clean installation with compose installer.",
   "keywords": [],
   "homepage": "https://github.com/Compose-Project/compose-cli#readme",
@@ -14,7 +14,7 @@
   "license": "ISC",
   "author": "emdash-compose",
   "type": "module",
-  "main": "dist",
+  "main": "dist/index.js",
   "types": "./types/index.d.ts",
   "files": [
     "dist",
@@ -27,7 +27,9 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "compose": "node dist/index.js"
   },
   "dependencies": {
     "cli-progress": "^3.12.0",
@@ -43,5 +45,6 @@
     "eslint": "^10.3.0",
     "typescript": "^6.0.3"
   },
-  "packageManager": "pnpm@10.33.3"
+  "packageManager": "pnpm@10.33.3",
+  "bin": "dist/index.js"
 }
