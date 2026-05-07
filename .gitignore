@@ -50,5 +50,3 @@ pnpm-workspace.yaml
 
 # Build output
 dist
-
-.npmrc
