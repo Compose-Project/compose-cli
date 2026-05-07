@@ -48,7 +48,7 @@ pnpm-workspace.yaml
 !.yarn/sdks
 !.yarn/versions
 
-# Build output
-dist
+# Source code
+src
 
 .npmrc
