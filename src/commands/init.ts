@@ -84,8 +84,8 @@ const cmd = new Command()
         }
 
         // Step 3/4 : run install and bootstrap command
-        await execCmd('pnpm install', projectDir, false);
-        await execCmd('pnpm bootstrap', projectDir);
+        await execCmd('pnpm install', projectDir, false, "Installing dependencies...");
+        await execCmd('pnpm bootstrap', projectDir, false, "Bootstrapping project...");
 
         // Step 4/4 : if Git is available, initialize a new Git repository
         try {
