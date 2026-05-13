@@ -2,6 +2,9 @@
 export const prerender = false;
 
 const slug = Astro.params.compose || "home";
+if (slug === "_root") {
+	return Astro.redirect("/", 301);
+}
 if (slug.startsWith("_emdash") || slug.startsWith("api/")) {
 	return new Response(null, { status: 404 });
 }
