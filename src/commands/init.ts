@@ -1,11 +1,10 @@
 import { existsSync } from 'node:fs';
-import { copyFile, mkdir } from 'node:fs/promises';
+import { appendFile, copyFile, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import cliProgress from 'cli-progress';
 import { Command } from 'commander';
 import { glob } from 'glob';
-import ora from 'ora';
 
 import { execCmd } from '../utils/exec-cmd.js';
 import { askQuestion } from '../utils/question.js';
@@ -17,7 +16,7 @@ const cmd = new Command()
     .action(async () => {
         console.log('Initializing a new Compose project...'.cyan);
 
-        // Step 1/4 : Get the project details
+        // Step 1/5 : Get the project details
         let { name } = cmd.opts();
         if (!name) {
             // Ask the user for the project name if not provided
@@ -43,7 +42,7 @@ const cmd = new Command()
             process.exit(1);
         }
 
-        // Step 2/4 : Create the project directory
+        // Step 2/5 : Create the project directory
         try {
             await mkdir(projectDir);
 
@@ -83,11 +82,22 @@ const cmd = new Command()
             process.exit(1);
         }
 
-        // Step 3/4 : run install and bootstrap command
+        // Step 3/5 : run install and bootstrap command
         await execCmd('pnpm install', projectDir, false, "Installing dependencies...");
         await execCmd('pnpm bootstrap', projectDir, false, "Bootstrapping project...");
 
-        // Step 4/4 : if Git is available, initialize a new Git repository
+        // Step 4/5 : Generate a random COMPOSE_INTERNAL_SECRET and add it to the .env file
+        try {
+            const crypto = await import('node:crypto');
+            const secret = crypto.randomBytes(32).toString('hex');
+            const envPath = join(projectDir, '.env');
+
+            await appendFile(envPath, `\nCOMPOSE_INTERNAL_SECRET=${secret}\n`);
+        } catch (err) {
+            console.error('Error generating COMPOSE_INTERNAL_SECRET in .env:', err);
+        }
+
+        // Step 5/5 : if Git is available, initialize a new Git repository
         try {
             await execCmd('git init && git add .', projectDir);
             await execCmd('git commit -m "core(init): Initial commit"', projectDir);

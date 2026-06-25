@@ -2,27 +2,35 @@
 export const prerender = false;
 
 const slug = Astro.params.compose || "home";
+if (slug === "_root") {
+    return Astro.redirect("/", 301);
+}
 if (slug.startsWith("_emdash") || slug.startsWith("api/")) {
-	return new Response(null, { status: 404 });
+    return new Response(null, { status: 404 });
 }
 
 let pageHtml = "";
 Astro.response.status = 500;
 
 try {
-	const res = await fetch(new URL("/_emdash/api/plugins/compose/get_page", Astro.url), {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ slug }),
-	});
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
 
-	if (res.ok) {
-		const { data } = await res.json();
-		Astro.response.status = data?.statusCode || 200;
-		pageHtml = data?.html || "";
-	}
-} catch (e) {
-	console.error("[Compose] SSR Error:", e);
+    const secret = import.meta.env.COMPOSE_INTERNAL_SECRET;
+    if (secret) headers["x-compose-secret"] = secret;
+
+    const res = await fetch(new URL("/_emdash/api/plugins/compose/get_page", Astro.url), {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ slug }),
+    });
+
+    if (res.ok) {
+        const { data } = await res.json();
+        Astro.response.status = data?.statusCode || 200;
+        pageHtml = data?.html || "";
+    }
+} catch (err) {
+    console.error("[Compose] SSR Error:", err);
 }
 ---
 
